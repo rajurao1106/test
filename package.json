@@ -11,7 +11,7 @@
     "nodemailer": "nodemon server/nodemailer/server.js",
     "jwt": "nodemon server/jwt/server.js",
     "stripe": "nodemon server/stripe/server.js",
-    "sql": "node server/sql/server.js",
+    "sql": "nodemon server/sql/server.js",
     "build": "vite build",
     "lint": "eslint .",
     "preview": "vite preview"
