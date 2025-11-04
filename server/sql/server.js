@@ -17,10 +17,11 @@ app.get("/users", async (req, res) => {
     const [rows] = await pool.query("SELECT * FROM students");
     res.json(rows);
   } catch (err) {
-    console.log("DB GET Error:", err);
-    res.status(500).json({ error: "Server Error" });
+    console.error("❌ GET /users DB Error:", err.message);
+    res.status(500).json({ error: err.message }); // ✅ Show actual error
   }
 });
+
 
 // ✅ POST Users
 app.post("/users", async (req, res) => {
