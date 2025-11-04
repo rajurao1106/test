@@ -11,8 +11,8 @@ app.use(express.json());
 // ✅ GET /users - Fetch all users
 app.get('/users', async (req, res) => {
   try {
-    const [rows] = await pool.query('SELECT * FROM studentSchema');
-    res.json(rows);  
+    const [rows] = await pool.query("SELECT * FROM studentSchema")  
+    res.json(rows)
   } catch (err) {  
     console.error(err);
     res.status(500).send('Server Error');
