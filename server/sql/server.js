@@ -1,46 +1,45 @@
 import express from "express";
 import cors from "cors";
 import pool from "./db.js";
+import dotenv from "dotenv";
 
+dotenv.config();
 const app = express();
 
 app.use(cors());
 app.use(express.json());
 
 app.get("/", (req, res) => {
-  res.send("✅ API working without dotenv!");
+  res.send("✅ PostgreSQL API Running on Render!");
 });
 
 // ✅ GET Users
 app.get("/users", async (req, res) => {
   try {
-    const [rows] = await pool.query("SELECT * FROM students");
-    res.json(rows);
+    const result = await pool.query("SELECT * FROM studentschema");
+    res.json(result.rows);
   } catch (err) {
-    console.error("❌ GET /users DB Error:", err.message);
-    res.status(500).json({ error: err.message }); // ✅ Show actual error
+    console.error("GET Error:", err.message);
+    res.status(500).json({ error: err.message });
   }
 });
-
 
 // ✅ POST Users
 app.post("/users", async (req, res) => {
   const { name, email } = req.body;
-  console.log("Received:", req.body);
 
   try {
-    const [result] = await pool.query(
-      "INSERT INTO students (name, email) VALUES (?, ?)",
+    const result = await pool.query(
+      "INSERT INTO studentschema (name, email) VALUES ($1, $2) RETURNING *",
       [name, email]
     );
 
-    res.status(201).json({ id: result.insertId, name, email });
+    res.status(201).json(result.rows[0]);
   } catch (err) {
-    console.log("DB INSERT Error:", err);
-    res.status(500).json({ error: "Server Error" });
+    console.error("INSERT Error:", err.message);
+    res.status(500).json({ error: err.message });
   }
 });
 
-// ✅ Static port or Render compatible fallback
 const PORT = process.env.PORT || 5000;
-app.listen(PORT, () => console.log(`✅ Server running port ${PORT}`));
+app.listen(PORT, () => console.log(`✅ Server running on ${PORT}`));
