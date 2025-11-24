@@ -1,8 +1,8 @@
 import { configureStore } from "@reduxjs/toolkit";
-import taskReducer from "./taskSlicer";
+import addFoodSlice from "./addFoodSlice"
 
 export const store = configureStore({
-  reducer: {
-    taskManager: taskReducer,
-  },
-});
+  reducer:{
+    foodManagement : addFoodSlice
+  }
+}) 

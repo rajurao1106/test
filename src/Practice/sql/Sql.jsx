@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 
 const API_URL = "https://test-9v8k.onrender.com"; // ✅ Change to your backend URL
 
-export default function App() {
+export default function Sql() {
   const [users, setUsers] = useState([]);
   const [form, setForm] = useState({ name: "", email: "" });
 
