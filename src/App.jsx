@@ -33,7 +33,7 @@ export default function App() {
         <Routes>
           {/* learning Projects */}
           <>
-            <Route path="/" element={<Home />} />
+            <Route path="/home" element={<Home />} />
             <Route path="/auth" element={<Auth />} />
             <Route path="/image" element={<UploadAndShow />} />
             <Route path="/email" element={<Email />} />
@@ -46,7 +46,7 @@ export default function App() {
             <Route path="/redux" element={<Redux />} />
             <Route path="/sql" element={<Sql />} />
             <Route path="/todo-app" element={<To_Do_App />} />
-            <Route path="/english-learner" element={<EnglishLearner />} />
+            <Route path="/" element={<EnglishLearner />} />
             <Route
               path="/protected"
               element={
