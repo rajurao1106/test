@@ -1,34 +1,61 @@
-import express from "express"
-import cors from "cors"
-import schemaStudentDetails from "./models/schemaStudentDetails.js"
-import { connectDB } from "./db/mongoDB.js"
+import express from "express";
+import cors from "cors";
+import schemaStudentDetails from "./models/schemaStudentDetails.js";
+import { connectDB } from "./db/mongoDB.js";
 
-const app = express()
-const port = 1337
+connectDB();
+const app = express();
+const port = 1337;
 
-app.use(express.json())
-app.use(cors())
+app.use(express.json());
+app.use(cors());
 
-connectDB()
 
-app.post("/post", async(req,res)=>{
-try {
-  const {name, age, address,} = req.body
-  const student = new schemaStudentDetails({name, age, address})
-  await student.save()
-  res.status(201).json({message: "data sent successfully", data:student})
-} catch (error) {
-  console.error(error)
-}
-})
+app.post("/send-data", async (req, res) => {
+  try {
+    const { name, age, address } = req.body;
+    const studentData = new schemaStudentDetails({ name, age, address });
+    await studentData.save();
+    res.status(201).json({ studentData });
+  } catch (error) {
+    console.error(error);
+  }
+});
 
-app.get("/get", async(req,res)=>{
-try {
-  const student = await schemaStudentDetails.find()
-   res.status(201).json({message: "data get successfully", data:student})
-} catch (error) {
-  console.error(error)
-}
-})
+app.get("/get-data", async (req, res) => {
+  try {
+    const studentData = await schemaStudentDetails.find();
+    res.status(200).json({ studentData });
+  } catch (error) {
+    console.error(error);
+  }
+});
 
-app.listen(port,()=>console.log(`server running on http://localhost:${port}/get`))
+app.delete("/delete-data/:id", async (req, res) => {
+  try {
+    const { id } = req.params;
+    const studentData = await schemaStudentDetails.findByIdAndDelete(id);
+    res.status(200).json({ studentData });
+  } catch (error) {
+    console.error(error);
+  }
+});
+
+app.put("/update-data/:id", async (req, res) => {
+  try {
+    const { id } = req.params;
+    const studentData = await schemaStudentDetails.findByIdAndUpdate(
+      id,
+      req.body,
+      { new: true }
+    );
+    res.status(200).json({ studentData });
+  } catch (error) {
+    console.error(error);
+  }
+});
+
+app.listen(
+  port,
+  console.log(`server running on http://localhost:${port}/get-data`)
+);

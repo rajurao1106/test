@@ -1,117 +1,79 @@
 import React, { useState } from "react";
-import axios from "axios";
 import { useNavigate } from "react-router-dom";
-import { Loader2, Eye, EyeOff } from "lucide-react"; // icons for UX
 
-function Login() {
-  const [username, setUsername] = useState("");
-  const [password, setPassword] = useState("");
-  const [message, setMessage] = useState("");
-  const [loading, setLoading] = useState(false);
-  const [showPassword, setShowPassword] = useState(false);
-
+export default function Login() {
+  const [input, setInput] = useState({ username: "", password: "" });
+  const [error, setError] = useState("");
   const navigate = useNavigate();
 
-  const handleLogin = async () => {
-    if (!username || !password) {
-      setMessage("Please fill in all fields.");
-      return;
-    }
+  const onchangeHandle = (e) => {
+    setInput({ ...input, [e.target.name]: e.target.value });
+  };
 
-    setLoading(true);
-    setMessage("");
+  const loginHandle = async (e) => {
+    e.preventDefault();
+    setError("");
 
     try {
-      const res = await axios.post("http://localhost:5000/login", {
-        username,
-        password,
+      const res = await fetch("http://localhost:1337/login", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ username: input.username, password: input.password }),
       });
 
-      if (res.status === 200) {
-        localStorage.setItem("token", res.data.token);
-        setMessage("Login successful!");
-        setTimeout(() => navigate("/protected"), 1000);
+      const data = await res.json();
+
+      if (res.ok) {
+        localStorage.setItem("token", data.token);
+        navigate("/student-form");
+      } else {
+        setError(data.message || "Invalid credentials");
       }
-    } catch (err) {
-      const errorMsg = err.response?.data?.message || "Login failed. Try again.";
-      setMessage(errorMsg);
-    } finally {
-      setLoading(false);
+    } catch (error) {
+      setError("Server error, try again later.");
+      console.error(error);
     }
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-indigo-100 to-white px-4">
-      <div className="w-full max-w-md bg-white shadow-xl rounded-2xl p-8 border border-gray-100">
-        <h2 className="text-3xl font-semibold text-center text-indigo-600 mb-6">
-          Welcome Back
-        </h2>
+    <div className="h-screen flex justify-center items-center bg-gray-100">
+      <div className="bg-white p-7 rounded-lg shadow-lg w-96">
+        <h2 className="text-2xl font-semibold mb-5 text-center">Login</h2>
 
-        <div className="space-y-4">
-          <input
-            className="w-full p-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-indigo-400 focus:outline-none transition"
-            placeholder="Username"
-            value={username}
-            onChange={(e) => setUsername(e.target.value)}
-          />
-
-          <div className="relative">
-            <input
-              type={showPassword ? "text" : "password"}
-              className="w-full p-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-indigo-400 focus:outline-none transition pr-10"
-              placeholder="Password"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-            />
-            <button
-              type="button"
-              onClick={() => setShowPassword(!showPassword)}
-              className="absolute right-3 top-3 text-gray-500 hover:text-indigo-500 transition"
-            >
-              {showPassword ? <EyeOff size={20} /> : <Eye size={20} />}
-            </button>
-          </div>
-
-          <button
-            onClick={handleLogin}
-            disabled={loading}
-            className="w-full flex items-center justify-center bg-indigo-600 hover:bg-indigo-700 text-white font-medium py-3 rounded-xl transition disabled:opacity-70 disabled:cursor-not-allowed"
-          >
-            {loading ? (
-              <>
-                <Loader2 className="animate-spin w-5 h-5 mr-2" />
-                Logging in...
-              </>
-            ) : (
-              "Login"
-            )}
-          </button>
-        </div>
-
-        {message && (
-          <p
-            className={`mt-4 text-center text-sm ${
-              message.toLowerCase().includes("success")
-                ? "text-green-600"
-                : "text-red-600"
-            }`}
-          >
-            {message}
+        {error && (
+          <p className="bg-red-200 text-red-800 p-2 rounded mb-3 text-center">
+            {error}
           </p>
         )}
 
-        <p className="mt-6 text-center text-sm text-gray-600">
-          Don’t have an account?{" "}
-          <span
-            onClick={() => navigate("/signup")}
-            className="text-indigo-600 hover:underline cursor-pointer"
+        <form onSubmit={loginHandle} className="space-y-4">
+          <input
+            type="text"
+            name="username"
+            placeholder="Username"
+            value={input.username}
+            onChange={onchangeHandle}
+            className="w-full border p-2 rounded focus:ring-2 focus:ring-blue-500 outline-none"
+          />
+
+          <input
+            type="password"
+            name="password"
+            placeholder="Password"
+            value={input.password}
+            onChange={onchangeHandle}
+            className="w-full border p-2 rounded focus:ring-2 focus:ring-blue-500 outline-none"
+          />
+
+          <button
+            type="submit"
+            className="w-full bg-blue-600 text-white py-2 rounded hover:bg-blue-700 transition"
           >
-            Sign up
-          </span>
-        </p>
+            Login
+          </button>
+          <a href="/signup">Signup</a>
+        </form>
       </div>
     </div>
   );
 }
-
-export default Login;

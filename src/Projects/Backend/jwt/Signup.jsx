@@ -21,7 +21,7 @@ function Signup() {
     setMessage("");
 
     try {
-      const res = await axios.post("http://localhost:1337/signup", {
+      const res = await axios.post("http://localhost:5000/signup", {
         username,
         password,
       });

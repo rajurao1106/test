@@ -1,6 +1,7 @@
 import React from "react";
 import { LogOut, ShieldCheck } from "lucide-react";
 import { useNavigate } from "react-router-dom";
+import Home from "../CRUD/Home";
 
 function Protected() {
   const navigate = useNavigate();
@@ -20,6 +21,7 @@ function Protected() {
         <p className="text-gray-600 mb-6">
           You have access because your token is valid.
         </p>
+        <Home/>
         <button
           onClick={handleLogout}
           className="w-full flex items-center justify-center bg-gray-100 hover:bg-gray-200 text-gray-800 font-medium py-3 rounded-xl transition"
