@@ -12,7 +12,7 @@ app.use(express.json());
 // ✅ 1. MongoDB Connection
 mongoose
   .connect(
-    // "mongodb+srv://rajurao1107:raoraju13377@cluster0.zjucb.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0",
+    // ",
     { useNewUrlParser: true, useUnifiedTopology: true }
   )
   .then(() => console.log("✅ MongoDB connected"))
